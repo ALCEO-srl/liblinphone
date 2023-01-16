@@ -289,7 +289,7 @@ static void presence_model_add_note(LinphonePresenceModel *model, LinphonePresen
 }
 
 static void presence_model_find_open_basic_status(LinphonePresenceService *service, LinphonePresenceBasicStatus *status) {
-	if (service->status == LinphonePresenceBasicStatusOpen) {
+	if ((strncmp(service->id, "id-default", 256)  == 0) && (service->status == LinphonePresenceBasicStatusOpen))  { //dms	
 		*status = LinphonePresenceBasicStatusOpen;
 	}
 }
@@ -343,6 +343,9 @@ LinphoneStatus linphone_presence_model_set_basic_status(LinphonePresenceModel *m
 	LinphonePresenceService *service;
 	int err = 0;
 
+	char *id = NULL;  //dms
+	LinphonePresencePerson *person = NULL; //dms	
+
 	if (model == NULL) return -1;
 
 	linphone_presence_model_clear_services(model);
@@ -351,6 +354,22 @@ LinphoneStatus linphone_presence_model_set_basic_status(LinphonePresenceModel *m
 
 	err = linphone_presence_model_add_service(model, service);
 	linphone_presence_service_unref(service);
+
+
+	//dms *****
+	if (bctbx_list_size(model->persons) == 0) {
+		/* There is no person in the presence model, add one. */
+		id = generate_presence_id();
+		person = presence_person_new(id, time(NULL));
+		if (id != NULL) ms_free(id);
+		if (person == NULL)
+			return -1;
+
+		presence_model_add_person(model, person);
+		linphone_presence_person_unref(person);
+	}
+    //***** dms
+
 	return err;
 }
 
@@ -430,7 +449,7 @@ LinphonePresenceActivity * linphone_presence_model_get_activity(const LinphonePr
 }
 
 LinphoneStatus linphone_presence_model_set_activity(LinphonePresenceModel *model, LinphonePresenceActivityType acttype, const char *description) {
-	LinphonePresenceActivity *activity;
+	LinphonePresenceActivity *activity; 
 	int err = 0;
 
 	if (model == NULL) return -1;
@@ -439,7 +458,7 @@ LinphoneStatus linphone_presence_model_set_activity(LinphonePresenceModel *model
 	activity = linphone_presence_activity_new(acttype, description);
 	if (activity == NULL) return -1;
 	err = linphone_presence_model_add_activity(model, activity);
-	linphone_presence_activity_unref(activity);
+	//dms linphone_presence_activity_unref(activity);
 	return err;
 }
 
@@ -1545,7 +1564,7 @@ static int process_pidf_xml_presence_person_activities(xmlparsing_context_t *xml
 						if (err < 0) break;
 						activity = linphone_presence_activity_new(acttype, description);
 						linphone_presence_person_add_activity(person, activity);
-						linphone_presence_activity_unref(activity);
+						//dms linphone_presence_activity_unref(activity);
 						if (description != NULL) linphone_free_xml_text_content(description);
 					}
 				}

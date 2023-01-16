@@ -659,7 +659,11 @@ void SalCallOp::processResponseCb (void *userCtx, const belle_sip_response_event
 					}
 					break;
 				case State::Terminating:
-					op->sendRequest(belle_sip_dialog_create_request(op->mDialog, "BYE"));
+				    //dms New code
+					if (code != 100) {
+					  //Looped BYE fix	
+					  op->sendRequest(belle_sip_dialog_create_request(op->mDialog, "BYE"));
+					}
 					break;
 				case State::Terminated:
 				default:

@@ -102,12 +102,14 @@ void SalRegisterOp::registerRefresherListener (belle_sip_refresher_t *refresher,
 
 		if (contactHeader) {
 			auto p = BELLE_SIP_PARAMETERS(contactHeader);
-			const char *gruu = belle_sip_parameters_get_parameter(p, "pub-gruu");
+			//dms const char *gruu = belle_sip_parameters_get_parameter(p, "pub-gruu");
+			const char *gruu = belle_sip_parameters_get_parameter(p, "gruu");
 			if (gruu) {
 				char *unquotedGruu = belle_sip_unquote_strdup(gruu);
 				op->setContactAddress(reinterpret_cast<SalAddress *>(belle_sip_header_address_parse(unquotedGruu)));
 				bctbx_free(unquotedGruu);
-				belle_sip_parameters_remove_parameter(p, "pub-gruu");
+				//dms belle_sip_parameters_remove_parameter(p, "pub-gruu");
+				belle_sip_parameters_remove_parameter(p, "gruu");
 			} else {
 				// Update contact with real value
 				op->setContactAddress(reinterpret_cast<SalAddress *>(BELLE_SIP_HEADER_ADDRESS(contactHeader)));

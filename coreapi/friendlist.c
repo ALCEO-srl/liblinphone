@@ -1263,47 +1263,16 @@ static void linphone_friend_list_send_list_subscription(LinphoneFriendList *list
 }
 
 void linphone_friend_list_update_subscriptions(LinphoneFriendList *list) {
-	LinphoneProxyConfig *cfg = NULL;
-	const LinphoneAddress *address = _linphone_friend_list_get_rls_address(list);
-	bool_t only_when_registered = FALSE;
-	bool_t should_send_list_subscribe = FALSE;
+//dms ****
+   		if (list->enable_subscriptions) {
 
-	if (list->lc) {
-		if (address)
-			cfg = linphone_core_lookup_known_proxy(list->lc, address);
-		only_when_registered = linphone_core_should_subscribe_friends_only_when_registered(list->lc);
-		// in case of only_when_registered, proxy config is mandatory to send subscribes. Otherwise, unexpected
-		// subscribtion can be issued using default contact address even if no account is configured yet.
-		should_send_list_subscribe =
-			(!only_when_registered || (cfg && linphone_proxy_config_get_state(cfg) == LinphoneRegistrationOk));
-	}
-
-	if (address != NULL) {
-		if (list->enable_subscriptions) {
-			if (should_send_list_subscribe) {
-				linphone_friend_list_send_list_subscription(list);
-			} else {
-				if (list->event) {
-					linphone_event_terminate(list->event);
-					linphone_event_unref(list->event);
-					list->event = NULL;
-					ms_message("Friends list [%p] subscription terminated because proxy config lost connection", list);
-				} else {
-					ms_message("Friends list [%p] subscription update skipped since dependant proxy config is not yet "
-							   "registered",
-							   list);
-				}
-			}
-		} else {
-			ms_message("Friends list [%p] subscription update skipped since subscriptions not enabled yet", list);
-		}
-	} else if (list->enable_subscriptions) {
-		const bctbx_list_t *elem;
-		for (elem = list->friends; elem != NULL; elem = bctbx_list_next(elem)) {
-			LinphoneFriend *lf = (LinphoneFriend *)bctbx_list_get_data(elem);
-			linphone_friend_update_subscribes(lf, only_when_registered);
-		}
-	}
+		  const bctbx_list_t *elem;
+		  for (elem = list->friends; elem != NULL; elem = bctbx_list_next(elem)) {
+		  	  LinphoneFriend *lf = (LinphoneFriend *)bctbx_list_get_data(elem);
+			  linphone_friend_update_subscribes(lf, TRUE);
+		  }
+	    } 
+//dms **** 
 }
 
 void linphone_friend_list_invalidate_subscriptions(LinphoneFriendList *list) {

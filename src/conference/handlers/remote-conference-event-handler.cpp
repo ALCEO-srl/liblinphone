@@ -91,11 +91,13 @@ void RemoteConferenceEventHandler::conferenceInfoNotifyReceived (const string &x
 
 	ConferenceAddress entityAddress(confInfo->getEntity());
 
+/*  //dms we don't care about checking entityAddress
+
 	if (entityAddress != getConferenceId().getPeerAddress()) {
 		lError() << "Unable to process received NOTIFY because the entity address " << entityAddress << " doesn't match the peer address " << getConferenceId().getPeerAddress();
 		return;
 	}
-
+*/
 	bool isFullState = confInfo->getState() == StateType::full;
 
 	if (isFullState) {
@@ -509,7 +511,7 @@ void RemoteConferenceEventHandler::conferenceInfoNotifyReceived (const string &x
 						const auto & joiningInfo = endpoint.getJoiningInfo().get();
 						if (joiningInfo.getWhen().present()) {
 							auto joiningTime = joiningInfo.getWhen().get();
-							tm timeStruct = {0};
+							tm timeStruct;
 							timeStruct.tm_year = (joiningTime.year() - 1900),
 							timeStruct.tm_mon = (joiningTime.month() - 1),
 							timeStruct.tm_mday = joiningTime.day(),

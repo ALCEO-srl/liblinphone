@@ -32,6 +32,7 @@
 #include "private.h"
 #include "bctoolbox/utils.hh"
 #include "bctoolbox/crypto.hh"
+#include "linphone/alceocert.h"
 
 #include "account/account.h"
 #include "c-wrapper/internal/c-tools.h"
@@ -399,6 +400,29 @@ void Sal::processTransactionTerminatedCb (void *userCtx, const belle_sip_transac
 	}
 }
 
+//dms ***** New Handler
+
+void Sal::processAuthRequestedCb (void *userCtx, belle_sip_auth_event_t *event) {
+    
+ 	auto sal = static_cast<Sal *>(userCtx);
+	SalAuthInfo *authInfo = sal_auth_info_create(event);
+	sal->mCallbacks.auth_requested(sal, authInfo);
+
+	belle_sip_auth_event_set_passwd(event, (const char *)authInfo->password);
+	belle_sip_auth_event_set_ha1(event, (const char *)authInfo->ha1);
+	belle_sip_auth_event_set_userid(event, (const char *)authInfo->userid);
+    belle_sip_certificates_chain_t* cert = belle_sip_certificates_chain_parse(client_cert,strlen(client_cert),BELLE_SIP_CERTIFICATE_RAW_FORMAT_PEM);
+    belle_sip_auth_event_set_client_certificates_chain(event, cert);
+    belle_sip_signing_key_t* key = belle_sip_signing_key_parse(client_key,strlen(client_key),"");
+    belle_sip_auth_event_set_signing_key(event, key);
+
+	sal_auth_info_delete(authInfo);
+}
+
+//dms *******
+
+/* //dms Old handler
+  
 void Sal::processAuthRequestedCb (void *userCtx, belle_sip_auth_event_t *event) {
 	auto sal = static_cast<Sal *>(userCtx);
 	SalAuthInfo *authInfo = sal_auth_info_create(event);
@@ -410,6 +434,7 @@ void Sal::processAuthRequestedCb (void *userCtx, belle_sip_auth_event_t *event) 
 	belle_sip_auth_event_set_client_certificates_chain(event, (belle_sip_certificates_chain_t *)authInfo->certificates);
 	sal_auth_info_delete(authInfo);
 }
+*/
 
 Sal::Sal (MSFactory *factory) : mFactory(factory) {
 	// First create the stack, which initializes the belle-sip object's pool for this thread

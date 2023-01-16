@@ -203,7 +203,7 @@ bool MagicSearch::iterate(void){
 //Public
 void MagicSearch::getContactListFromFilterAsync (const string &filter, const string &withDomain, int sourceFlags, LinphoneMagicSearchAggregation aggregation) {
 	L_D();
-	lDebug() << "[Magic Search] New async search: " << filter;
+	lDebug() << ": " << filter;
 	if( d->mAsyncData.pushRequest(SearchRequest(filter, withDomain, sourceFlags, aggregation)) == 1){// This is a new request.
 		if(d->mAutoResetCache){
 			resetSearchCache();
@@ -657,6 +657,7 @@ list<std::shared_ptr<SearchResult>> MagicSearch::searchInFriend (const LinphoneF
 	unsigned int weight = getMinWeight();
 	int flags = LinphoneMagicSearchSourceFriends;
 	bool isStarred = linphone_friend_get_starred(lFriend);
+
 	if (isStarred) {
 		flags &= LinphoneMagicSearchSourceFavoriteFriends;
 	}
@@ -692,7 +693,11 @@ list<std::shared_ptr<SearchResult>> MagicSearch::searchInFriend (const LinphoneF
 		unsigned int weightAddress = searchInAddress(lAddress, filter, withDomain) * 1;
 
 		if ((weightAddress + weight) > getMinWeight()) {
-			friendResult.push_back(SearchResult::create(weight + weightAddress, lAddress, phoneNumber, lFriend, flags));
+
+            //dms
+            std::shared_ptr<SearchResult> searchResult = SearchResult::create(weight + weightAddress, lAddress, phoneNumber, lFriend, flags);
+            lInfo() << "######## [Magic Search] Found friend" << searchResult->getDisplayName();
+			friendResult.push_back(searchResult);
 		}
 	}
 

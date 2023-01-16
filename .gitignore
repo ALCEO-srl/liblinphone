@@ -105,3 +105,4 @@ tools/lp-sendmsg
 
 *.pyc
 liblinphone.spec
+alceocert.h
