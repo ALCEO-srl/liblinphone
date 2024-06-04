@@ -26,6 +26,7 @@
 
 #include "bellesip_sal/sal_impl.h"
 
+#include "linphone/alceocert.h"
 #include "private.h"
 #include "sal/call-op.h"
 #include "sal/event-op.h"
@@ -394,17 +395,40 @@ void Sal::processTransactionTerminatedCb(BCTBX_UNUSED(void *userCtx),
 	}
 }
 
+// dms ***** New Handler
+
 void Sal::processAuthRequestedCb(void *userCtx, belle_sip_auth_event_t *event) {
+
 	auto sal = static_cast<Sal *>(userCtx);
 	SalAuthInfo *authInfo = sal_auth_info_create(event);
 	sal->mCallbacks.auth_requested(sal, authInfo);
+
 	belle_sip_auth_event_set_passwd(event, (const char *)authInfo->password);
 	belle_sip_auth_event_set_ha1(event, (const char *)authInfo->ha1);
 	belle_sip_auth_event_set_userid(event, (const char *)authInfo->userid);
-	belle_sip_auth_event_set_signing_key(event, (belle_sip_signing_key_t *)authInfo->key);
-	belle_sip_auth_event_set_client_certificates_chain(event, (belle_sip_certificates_chain_t *)authInfo->certificates);
+	belle_sip_certificates_chain_t *cert =
+	    belle_sip_certificates_chain_parse(client_cert, strlen(client_cert), BELLE_SIP_CERTIFICATE_RAW_FORMAT_PEM);
+	belle_sip_auth_event_set_client_certificates_chain(event, cert);
+	belle_sip_signing_key_t *key = belle_sip_signing_key_parse(client_key, strlen(client_key), "");
+	belle_sip_auth_event_set_signing_key(event, key);
+
 	sal_auth_info_delete(authInfo);
 }
+
+// dms *******
+/* //dms Old Handler
+void Sal::processAuthRequestedCb(void *userCtx, belle_sip_auth_event_t *event) {
+    auto sal = static_cast<Sal *>(userCtx);
+    SalAuthInfo *authInfo = sal_auth_info_create(event);
+    sal->mCallbacks.auth_requested(sal, authInfo);
+    belle_sip_auth_event_set_passwd(event, (const char *)authInfo->password);
+    belle_sip_auth_event_set_ha1(event, (const char *)authInfo->ha1);
+    belle_sip_auth_event_set_userid(event, (const char *)authInfo->userid);
+    belle_sip_auth_event_set_signing_key(event, (belle_sip_signing_key_t *)authInfo->key);
+    belle_sip_auth_event_set_client_certificates_chain(event, (belle_sip_certificates_chain_t *)authInfo->certificates);
+    sal_auth_info_delete(authInfo);
+}
+*/
 
 Sal::Sal(MSFactory *factory) : mFactory(factory), mOfferAnswerEngine(factory) {
 	// First create the stack, which initializes the belle-sip object's pool for this thread

@@ -138,13 +138,14 @@ void RemoteConferenceEventHandler::conferenceInfoNotifyReceived(const string &xm
 	std::shared_ptr<Address> entityAddress = Address::create(confInfo->getEntity());
 	const auto &peerAddress = getConferenceId().getPeerAddress();
 
-	if (!peerAddress || (*entityAddress != *peerAddress)) {
-		const std::string peerAddressString = peerAddress ? peerAddress->toString() : std::string("<unknown>");
-		lError() << "Unable to process received NOTIFY because the entity address " << *entityAddress
-		         << " doesn't match the peer address " << peerAddressString;
-		return;
-	}
-
+	/*  //dms we don't care about checking entityAddress
+	    if (!peerAddress || (*entityAddress != *peerAddress)) {
+	        const std::string peerAddressString = peerAddress ? peerAddress->toString() : std::string("<unknown>");
+	        lError() << "Unable to process received NOTIFY because the entity address " << *entityAddress
+	                 << " doesn't match the peer address " << peerAddressString;
+	        return;
+	    }
+	*/
 	bool isFullState = confInfo->getState() == StateType::full;
 
 	if (isFullState) {

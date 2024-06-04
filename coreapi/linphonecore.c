@@ -5545,7 +5545,7 @@ void linphone_core_set_presence_info(LinphoneCore *lc, int minutes_away, const c
 	}
 	activity = linphone_presence_activity_new(acttype, description);
 	linphone_presence_model_add_activity(presence, activity);
-	linphone_presence_activity_unref(activity);
+	// dms linphone_presence_activity_unref(activity);
 
 end:
 	linphone_presence_model_set_contact(presence, contact);
