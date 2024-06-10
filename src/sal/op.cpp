@@ -93,8 +93,7 @@ void SalOp::setContactAddress(const SalAddress *value) {
 	if (mContactAddress) sal_address_unref(mContactAddress);
 	mContactAddress = value ? sal_address_clone(value) : nullptr;
 
-    lInfo() << "###### Debug setContactAddress [" << sal_address_as_string(mContactAddress) << "]";
-
+	lInfo() << "###### Debug setContactAddress [" << sal_address_as_string(mContactAddress) << "]";
 }
 
 void SalOp::assignAddress(SalAddress **address, const string &value) {
@@ -664,32 +663,31 @@ belle_sip_header_contact_t *SalOp::createContact(bool forceSipInstance) {
 	if (mPrivacy != SalPrivacyNone) belle_sip_uri_set_user(contactUri, nullptr);
 
 	// dms bool hasGruuContact = belle_sip_parameters_has_parameter(
-	// dms    BELLE_SIP_PARAMETERS(belle_sip_header_address_get_uri(BELLE_SIP_HEADER_ADDRESS(contactHeader))), "gr"); 
+	// dms    BELLE_SIP_PARAMETERS(belle_sip_header_address_get_uri(BELLE_SIP_HEADER_ADDRESS(contactHeader))), "gr");
 
-    // dms ********* Fix. Wrong Contact when GRUU is enabled
-    char * strContactUri = belle_sip_uri_to_string(contactUri);
+	// dms ********* Fix. Wrong Contact when GRUU is enabled
+	char *strContactUri = belle_sip_uri_to_string(contactUri);
 
 	// Automatic contact must be disabled if provided with a GRUU contact.
-	
-    lInfo() << "createContact strContactUri=" << strContactUri;
 
-    bool hasGruuContact = (strncmp("sip:GRUU", strContactUri, 8) == 0);
-        	
+	lInfo() << "createContact strContactUri=" << strContactUri;
+
+	bool hasGruuContact = (strncmp("sip:GRUU", strContactUri, 8) == 0);
+
 	belle_sip_free(strContactUri);
 
 	if (!hasGruuContact) {
-	  belle_sip_header_contact_set_automatic(contactHeader, mRoot->mAutoContacts);
-    }
-	else {
-      belle_sip_header_contact_set_automatic(contactHeader, false);
-	}  
+		belle_sip_header_contact_set_automatic(contactHeader, mRoot->mAutoContacts);
+	} else {
+		belle_sip_header_contact_set_automatic(contactHeader, false);
+	}
 	/***********/
 
-    if (!hasGruuContact){
-      lInfo() << "createContact hasGruuContact=FALSE";
-    } else {
-      lInfo() << "createContact hasGruuContact=TRUE";
-    }
+	if (!hasGruuContact) {
+		lInfo() << "createContact hasGruuContact=FALSE";
+	} else {
+		lInfo() << "createContact hasGruuContact=TRUE";
+	}
 
 	/* Add +sip.instance */
 	if (forceSipInstance || hasGruuContact) {
@@ -710,7 +708,8 @@ belle_sip_header_contact_t *SalOp::createContact(bool forceSipInstance) {
 		belle_sip_parameters_set_parameter(BELLE_SIP_PARAMETERS(contactHeader), "+org.linphone.specs", specs.c_str());
 	}
 
-	lInfo() << "op ##### DEBUG createContact" << belle_sip_uri_to_string(belle_sip_header_address_get_uri(BELLE_SIP_HEADER_ADDRESS(contactHeader)));
+	lInfo() << "op ##### DEBUG createContact"
+	        << belle_sip_uri_to_string(belle_sip_header_address_get_uri(BELLE_SIP_HEADER_ADDRESS(contactHeader)));
 	return contactHeader;
 }
 
