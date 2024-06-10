@@ -1097,6 +1097,7 @@ std::shared_ptr<Address> CallSessionPrivate::getFixedContact() const {
 	return result;
 }
 
+
 // -----------------------------------------------------------------------------
 
 void CallSessionPrivate::reinviteToRecoverFromConnectionLoss() {

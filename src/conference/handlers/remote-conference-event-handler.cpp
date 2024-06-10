@@ -138,7 +138,7 @@ void RemoteConferenceEventHandler::conferenceInfoNotifyReceived(const string &xm
 	std::shared_ptr<Address> entityAddress = Address::create(confInfo->getEntity());
 	const auto &peerAddress = getConferenceId().getPeerAddress();
 
-	/*  //dms we don't care about checking entityAddress
+	/*  // dms we don't care about checking entityAddress
 	    if (!peerAddress || (*entityAddress != *peerAddress)) {
 	        const std::string peerAddressString = peerAddress ? peerAddress->toString() : std::string("<unknown>");
 	        lError() << "Unable to process received NOTIFY because the entity address " << *entityAddress

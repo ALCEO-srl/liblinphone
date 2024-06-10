@@ -416,7 +416,7 @@ void Sal::processAuthRequestedCb(void *userCtx, belle_sip_auth_event_t *event) {
 }
 
 // dms *******
-/* //dms Old Handler
+/* // dms Old Handler
 void Sal::processAuthRequestedCb(void *userCtx, belle_sip_auth_event_t *event) {
     auto sal = static_cast<Sal *>(userCtx);
     SalAuthInfo *authInfo = sal_auth_info_create(event);

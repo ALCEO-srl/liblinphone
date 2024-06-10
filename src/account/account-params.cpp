@@ -402,7 +402,7 @@ void AccountParams::setOutboundProxyEnabled(bool enable) {
 			lError() << "Can't enable outbound proxy without having set the proxy address first!";
 			return;
 		}
-
+        mRoutes.clear(); //dms fix
 		mRoutes.emplace_back(mProxyAddress);
 	} else {
 		mRoutes.clear();
@@ -851,7 +851,6 @@ LinphoneStatus AccountParams::setServerAddressAsString(const std::string &server
 			bool outboundProxyEnabled = getOutboundProxyEnabled();
 
 			mProxyAddress = addr->clone()->toSharedPtr();
-
 			mProxy = mProxyAddress->toString();
 
 			if (outboundProxyEnabled) {
