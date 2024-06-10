@@ -681,7 +681,7 @@ belle_sip_header_contact_t *SalOp::createContact(bool forceSipInstance) {
 	} else {
 		belle_sip_header_contact_set_automatic(contactHeader, false);
 	}
-	/***********/
+	// dms ***********/
 
 	if (!hasGruuContact) {
 		lInfo() << "createContact hasGruuContact=FALSE";
