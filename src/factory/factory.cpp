@@ -238,7 +238,7 @@ LinphoneCore *Factory::createSharedCoreWithConfig(LinphoneConfig *config,
                                                   void *system_context,
                                                   const std::string &app_group_id,
                                                   bool_t main_core) const {
-	return _linphone_core_new_shared_with_config(NULL, config, NULL, system_context, FALSE, app_group_id.c_str(),
+	return _linphone_core_new_shared_with_config(NULL, config, NULL, system_context, FALSE, app_group_id.c_str(), //dms
 	                                             main_core);
 }
 

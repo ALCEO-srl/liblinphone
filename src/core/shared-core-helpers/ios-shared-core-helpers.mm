@@ -197,6 +197,7 @@ IosSharedCoreHelpers::IosSharedCoreHelpers (shared_ptr<LinphonePrivate::Core> co
 }
 
 static void on_push_notification_message_received(LinphoneCore *lc, LinphoneChatRoom *room, LinphoneChatMessage *message) {
+	lInfo() << "################ on_push_notification_message_received ###################";
 	if (linphone_chat_message_has_text_content(message) || linphone_chat_message_get_file_transfer_information(message) != NULL ||
 		linphone_chat_message_has_conference_invitation_content(message)) {
 		lInfo() << "[push] msg [" << message << "] received from chat room [" << room << "]";
@@ -394,6 +395,26 @@ void IosSharedCoreHelpers::putMsgInUserDefaults(LinphoneChatMessage *msg) {
 	NSNumber *isText = [NSNumber numberWithBool:((BOOL) linphone_chat_message_is_text(msg))];
 	const char *cTextContent = linphone_chat_message_get_utf8_text(msg);
 	const char *cReactionContent = nil;
+
+	NSString *textContent = [NSString stringWithUTF8String: cTextContent ? cTextContent : ""];
+	NSString *reactionContent = @""	;
+	NSString *subject = @"";
+
+	
+	const LinphoneAddress *cFromAddr = linphone_chat_message_get_from_address(msg);
+	const LinphoneAddress *cLocalAddr = linphone_chat_message_get_local_address(msg);
+	const LinphoneAddress *cPeerAddr = linphone_chat_message_get_from_address(msg);//linphone_chat_message_get_peer_address(msg);
+	NSString *fromAddr = [NSString stringWithUTF8String:linphone_address_as_string(cFromAddr)];
+	NSString *localAddr = [NSString stringWithUTF8String:linphone_address_as_string(cLocalAddr)];
+	NSString *peerAddr = [NSString stringWithUTF8String:linphone_address_as_string(cPeerAddr)];
+	NSNumber *ttl = [NSNumber numberWithUnsignedLongLong:ms_get_cur_time_ms()];
+	NSNumber *isIcalendar = [NSNumber numberWithBool: false];
+	LinphoneConferenceInfo *conferenceInfo = nil;
+	NSNumber *isConferenceInvitationNew = [NSNumber numberWithBool:false];
+	NSNumber *isConferenceInvitationUpdate = [NSNumber numberWithBool:false];
+	NSNumber *isConferenceInvitationCancellation = [NSNumber numberWithBool:false];
+
+/*
 	NSString *textContent = [NSString stringWithUTF8String: cTextContent ? cTextContent : ""];
 	NSString *reactionContent = [NSString stringWithUTF8String: cReactionContent ? cReactionContent : ""];
 	NSString *subject;
@@ -420,7 +441,7 @@ void IosSharedCoreHelpers::putMsgInUserDefaults(LinphoneChatMessage *msg) {
 	if (isIcalendar && conferenceInfo &&  linphone_conference_info_get_subject(conferenceInfo)) {
 		subject = [NSString stringWithUTF8String:linphone_conference_info_get_subject(conferenceInfo)];
 	}
-
+*/
 	NSDictionary *newMsg = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:isText, textContent, subject, fromAddr, localAddr, peerAddr, ttl, reactionContent, isIcalendar, isConferenceInvitationNew, isConferenceInvitationUpdate, isConferenceInvitationCancellation, nil]
 							forKeys:[NSArray arrayWithObjects:@"isText", @"textContent", @"subject", @"fromAddr", @"localAddr", @"peerAddr", @"ttl", @"reactionContent", @"isIcalendar", @"isConferenceInvitationNew", @"isConferenceInvitationUpdate", @"isConferenceInvitationCancellation", nil]];
 
