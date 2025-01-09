@@ -933,10 +933,24 @@ Core::handleChatMessagesAggregation(shared_ptr<AbstractChatRoom> chatRoom, SalOp
 LinphoneReason Core::onSipMessageReceived(SalOp *op, const SalMessage *sal_msg) {
 	L_D();
 
+    lError() << "################## core-chat-room.cpp onSipMessageReceived"; //dms
+
 	LinphoneCore *cCore = getCCore();
 	LinphoneReason reason = LinphoneReasonNotAcceptable;
 	std::shared_ptr<Address> peerAddress;
 	std::shared_ptr<Address> localAddress;
+     
+	 //dms
+	// lError() << "################ 1";
+	//auto callId = op->getCallId();
+	////if (!callId.empty() && d->lastPushReceivedCallId == callId) {
+	//	lError() << "######## dms Chat message Call-ID matches last push received Call-ID:" << callId << " d->lastPushReceivedCallId:" << d->lastPushReceivedCallId;
+	//    auto messageOp = dynamic_cast<SalMessageOpInterface *>(op);
+	//    messageOp->reply(linphone_reason_to_sal(LinphoneReasonNone));
+
+	//}	
+    //dms
+	//lError() << "################ 2";
 
 	if (linphone_core_conference_server_enabled(cCore)) {
 		localAddress = peerAddress = Address::create(op->getTo());
@@ -967,6 +981,7 @@ LinphoneReason Core::onSipMessageReceived(SalOp *op, const SalMessage *sal_msg) 
 	}
 
 	auto callId = op->getCallId();
+	callId = op->getCallId();
 	if (!callId.empty() && d->lastPushReceivedCallId == callId) {
 		lInfo() << "Chat message Call-ID matches last push received Call-ID, stopping push background task";
 		d->lastPushReceivedCallId = "";

@@ -1338,7 +1338,7 @@ std::shared_ptr<AudioDevice> Core::getDefaultOutputAudioDevice() const {
 void Core::pushNotificationReceived(const string &callId, const string &payload, bool isCoreStarting) {
 	L_D();
 
-	lInfo() << "Push notification received for Call-ID [" << callId << "]";
+	lError() << "####### Push notification received for Call-ID [" << callId << "]"; //dms
 	// Stop any previous background task we might already have
 	d->pushReceivedBackgroundTask.stop();
 
@@ -1350,20 +1350,21 @@ void Core::pushNotificationReceived(const string &callId, const string &payload,
 			if (callLog) {
 				const auto &id = callLog->getCallId();
 				if (id == callId) {
-					lInfo() << "Call with matching Call-ID found, no need for a background task";
+					lError() << "######### Call with matching Call-ID found, no need for a background task"; //dms
 					found = true;
 					break;
 				}
 			}
-		}
+		}  
 
 		auto chatMessage = findChatMessageFromCallId(callId);
 		if (chatMessage) {
-			lInfo() << "Chat message with matching Call-ID found, no need for a background task";
+			lError() << "############ Chat message with matching Call-ID found, no need for a background task"; //dms
 			found = true;
 		}
 
 		if (!found) {
+			lError() << "############ Starting backgroundtask"; //dms
 			d->lastPushReceivedCallId = callId;
 			static_cast<PlatformHelpers *>(lc->platform_helper)->startPushService();
 			// Start a background task for 20 seconds to ensure we have time to process the push
@@ -1374,11 +1375,11 @@ void Core::pushNotificationReceived(const string &callId, const string &payload,
 	linphone_core_notify_push_notification_received(lc, payload.c_str());
 
 	if (isCoreStarting) {
-		lInfo() << "Core is starting, skipping network tasks that ensures sockets are alive";
+		lError() << "Core is starting, skipping network tasks that ensures sockets are alive";
 		return;
 	}
 	if (found) {
-		lInfo() << "Call-ID was found, skipping network tasks that ensures sockets are alive";
+		lError() << "Call-ID was found, skipping network tasks that ensures sockets are alive";
 		return;
 	}
 

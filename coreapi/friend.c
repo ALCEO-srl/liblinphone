@@ -1112,6 +1112,8 @@ void linphone_friend_update_subscribes(LinphoneFriend *fr, bool_t only_when_regi
 }
 
 void linphone_friend_save(LinphoneFriend *fr, LinphoneCore *lc) {
+	ms_debug("######### linphone_friend_save %s", linphone_friend_get_name(fr));
+	if (!lc->friends_db_file) ms_debug("######### linphone_friend_save lc->friends_db_file is NULL");
 	if (lc && lc->friends_db_file) linphone_core_store_friend_in_db(lc, fr);
 }
 
@@ -1599,6 +1601,7 @@ void linphone_friend_add_addresses_and_numbers_into_maps(LinphoneFriend *lf, Lin
 #ifdef HAVE_SQLITE
 
 static void linphone_create_friends_table(sqlite3 *db) {
+	
 	char *errmsg = NULL;
 	int ret;
 	ret = sqlite3_exec(db,

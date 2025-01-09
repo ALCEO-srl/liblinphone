@@ -765,12 +765,15 @@ linphone_friend_list_import_friend(LinphoneFriendList *list, LinphoneFriend *lf,
 
 static void
 linphone_friend_list_delete_friend(LinphoneFriendList *list, LinphoneFriend *lf, bool_t remove_from_server) {
-#if defined(HAVE_SQLITE) && defined(VCARD_ENABLED)
+#if defined(HAVE_SQLITE) //&& defined(VCARD_ENABLED)
 	if (lf && lf->lc && linphone_friend_list_database_storage_enabled(list)) {
+
+		ms_debug("######### linphone_friend_list_delete_friend %s", linphone_friend_get_name(lf));
 		linphone_core_remove_friend_from_db(lf->lc, lf);
 	}
 
-	if (remove_from_server && list->type == LinphoneFriendListTypeCardDAV) {
+/*//dms	
+    if (remove_from_server && list->type == LinphoneFriendListTypeCardDAV) {
 		LinphoneVcard *lvc = linphone_friend_get_vcard(lf);
 		if (lvc && linphone_vcard_get_uid(lvc)) {
 			LinphoneCardDavContext *cdc = linphone_carddav_context_new(list);
@@ -783,7 +786,7 @@ linphone_friend_list_delete_friend(LinphoneFriendList *list, LinphoneFriend *lf,
 				linphone_carddav_delete_vcard(cdc, lf);
 			}
 		}
-	}
+	}*/
 #endif
 
 	if (lf->refkey) {

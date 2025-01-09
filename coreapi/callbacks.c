@@ -625,6 +625,7 @@ static void call_refer_received(SalOp *op, const SalAddress *referTo) {
 static void message_received(SalOp *op, const SalMessage *msg) {
 	LinphoneCore *lc = (LinphoneCore *)op->getSal()->getUserPointer();
 
+   lError() << "###################   callbacks.c message_received"; //dms
 	if (!check_core_state(lc, op)) return;
 
 	LinphoneReason reason = lc->chat_deny_code;

@@ -967,6 +967,9 @@ void SalOp::processIncomingMessage(const belle_sip_request_event_t *event) {
 	auto serverTransaction = belle_sip_provider_create_server_transaction(mRoot->mProvider, request);
 	auto contentTypeHeader =
 	    belle_sip_message_get_header_by_type(BELLE_SIP_MESSAGE(request), belle_sip_header_content_type_t);
+	
+	lError() << "################## op.cpp processIncomingMessage"; //dms
+	
 	if (contentTypeHeader) {
 		if (mPendingServerTransaction) belle_sip_object_unref(mPendingServerTransaction);
 		mPendingServerTransaction = serverTransaction;
@@ -1009,6 +1012,8 @@ void SalOp::processIncomingMessage(const belle_sip_request_event_t *event) {
 		salMessage.message_id = messageId;
 		auto dateHeader = belle_sip_message_get_header_by_type(request, belle_sip_header_date_t);
 		salMessage.time = dateHeader ? belle_sip_header_date_get_time(dateHeader) : time(nullptr);
+
+		//dms Qui chiama le callback 
 		mRoot->mCallbacks.message_received(this, &salMessage);
 
 		belle_sip_object_unref(addressHeader);
@@ -1034,7 +1039,7 @@ int SalOp::replyMessage(SalReason reason) {
 		lError() << "SalOp::replyMessage(): no server transaction";
 		return -1;
 	}
-
+    lError() << "################ SalOp::replyMessage"; //dms
 	auto response = belle_sip_response_create_from_request(
 	    belle_sip_transaction_get_request(BELLE_SIP_TRANSACTION(mPendingServerTransaction)), toSipCode(reason));
 	belle_sip_server_transaction_send_response(mPendingServerTransaction, response);
