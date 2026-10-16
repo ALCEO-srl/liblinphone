@@ -378,6 +378,7 @@ void Core::reportConferenceCallEvent (EventLog::Type type, std::shared_ptr<CallL
 
 	LinphoneCore *lc = getCCore();
 
+/*  //dms Fix 1.1. We don't use the internal storage anymore
 	// Check if we already have this log in cache
 	if (lc->call_logs != NULL) {
 		for (bctbx_list_t *it = lc->call_logs; it != NULL; it = it->next) {
@@ -394,7 +395,7 @@ void Core::reportConferenceCallEvent (EventLog::Type type, std::shared_ptr<CallL
 
 	if (bctbx_list_size(lc->call_logs) > (size_t)lc->max_call_logs) {
 		bctbx_list_t *elem, *prevelem = NULL;
-		/*find the last element*/
+		///find the last element
 		for(elem = lc->call_logs; elem != NULL; elem = elem->next) {
 			prevelem = elem;
 		}
@@ -406,6 +407,7 @@ void Core::reportConferenceCallEvent (EventLog::Type type, std::shared_ptr<CallL
 #ifndef HAVE_DB_STORAGE
 	call_logs_write_to_config_file(lc);
 #endif
+*********** Fix 1.1 */
 
 	linphone_core_notify_call_log_updated(getCCore(), callLog->toC());
 }
