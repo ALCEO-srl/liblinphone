@@ -376,9 +376,9 @@ void Core::reportConferenceCallEvent (EventLog::Type type, std::shared_ptr<CallL
 	d->mainDb->addEvent(event);
 #endif
 
+/*  //dms Fix 1.1. We don't use the internal storage anymore
 	LinphoneCore *lc = getCCore();
 
-/*  //dms Fix 1.1. We don't use the internal storage anymore
 	// Check if we already have this log in cache
 	if (lc->call_logs != NULL) {
 		for (bctbx_list_t *it = lc->call_logs; it != NULL; it = it->next) {
